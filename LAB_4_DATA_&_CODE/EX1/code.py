@@ -21,12 +21,13 @@ T = 273.15 + 25  # 25°C to Kelvin
 VT = k * T / e  # k is Boltzmann constant, e is elementary charge
 
 # Select linear region in semi-log plot (adjust these values based on your data)
-mask = (current > 1e-3) & (current < 1e-0)  # Select middle region
+mask = (current > 1e-2) & (current < 0.1)  # Select middle region
 voltage_fit = voltage[mask]
 current_fit = current[mask]
 
 # Take natural log of current
 ln_current = np.log(current_fit)
+print(current.min(), current.max())
 
 # Perform linear regression
 slope, intercept, r_value, p_value, std_err = stats.linregress(voltage_fit, ln_current)
@@ -42,7 +43,7 @@ fit_line = np.exp(slope * voltage + intercept)
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
 
 # Linear scale plot
-ax1.plot(voltage, current*1e3, 'o', color='#1f77b4', markerfacecolor='white', markersize=8, markeredgewidth=3)
+ax1.plot(voltage, current, 'o', color='#1f77b4', markerfacecolor='white', markersize=8, markeredgewidth=3)
 ax1.grid(True, linestyle='--', alpha=0.7)
 ax1.set_xlabel('Voltage (V)')
 ax1.set_ylabel('Current (mA)')
@@ -50,8 +51,8 @@ ax1.set_title('Dark I-V Characteristics (Linear Scale)')
 ax1.margins(x=0.02)
 
 # Log scale plot with fit
-ax2.semilogy(voltage, current*1e3, 'o', color='#1f77b4', markerfacecolor='white', markersize=8, markeredgewidth=3, label='Data')
-ax2.semilogy(voltage, fit_line*1e3, 'r-', linewidth=2, label='Fit')
+ax2.semilogy(voltage, current, 'o', color='#1f77b4', markerfacecolor='white', markersize=8, markeredgewidth=3, label='Data')
+ax2.semilogy(voltage, fit_line, 'r-', linewidth=2, label='Fit')
 ax2.grid(True, linestyle='--', alpha=0.7)
 ax2.set_xlabel('Voltage (V)')
 ax2.set_ylabel('Current (mA)')
